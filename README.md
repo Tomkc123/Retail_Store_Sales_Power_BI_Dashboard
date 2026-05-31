@@ -1,7 +1,6 @@
 Retail Sales Peformance Power BI Dashboard
 
-<img width="1704" height="1164" alt="image" src="https://github.com/user-attachments/assets/653f1577-c6bb-42b2-bfb6-bb6fcbfb11d1" />
-
+<img width="1684" height="1142" alt="image" src="https://github.com/user-attachments/assets/76cac5aa-1ce7-4401-ac81-055fb77663c3" />
 
 The objective of this project was to transform a messy, raw retail dataset into a executive-ready dashboard. By transforming and cleaning the raw dataset CSV, the project bridges the gap between raw data and strategic business choices.
 
@@ -37,7 +36,7 @@ Data Transformation and cleaning (Power Query):
 
 Data Modeling and Star Schema:
 
-Created two dimension tables (Products, Customers) and one fact table Sales Transaction. Also created a date table using DAX expression.
+Created two dimension tables (Products, Customers) and one fact table Sales Transaction. Also created a Dates table using DAX expression.
   
 The table dynamically scans the minimum and maximum dates present in the transactional dataset using `CALENDAR(StartDate, EndDate)`, ensuring
 
@@ -46,18 +45,39 @@ zero missing dates in the continuous time series. Also established one-to-many r
 Created one more table named _Measures to structure all the measures used in the dashboard.
 
 
+
+
 Data Visualization:
 
   
-Page 1: Sales Overview
+Page 1: Sales Overview 
 
-KPI cards: A multi-row card contains total revenue, total orders, total units sold, average transaction value and average units per transaction.
+KPI cards: A multi-row card contains total revenue, total orders, total units sold, average transaction value, average units per transaction and YoY% growth.
 
+To calculate YoY% growth, the following time-intelligence DAX measures were built:
+
+1. Total Revenue = SUM('Sales Transaction'[Revenue])
+
+2. Previous Year Revenue = 
+   VAR CurrentYearSelected = MAX('Dates'[Year])
+   
+   RETURN
+   
+   CALCULATE(
+       [Total Revenue],
+       ALL('Dates'[Year]),
+       'Dates'[Year] = CurrentYearSelected - 1
+   )
+
+3. YoY% growth = 
+   DIVIDE(
+   [Total Revenue] - [Previous Year Revenue],
+   [Previous Year Revenue]
+)
   
 Sales Trend and Revenue Patterns:
 
-In the bottom left side of line chart, the business maintained consistent performance from 2022 through 2024, with revenue hovering near the $0.5M mark 
-annually and volume tracking closely alongside it. This indicates solid market stability and steady baseline demand. There is a dramatic drop-
+In the bottom left side of line chart, the business maintained consistent performance from 2022 through 2024, with revenue hovering near the $0.5M mark annually and volume tracking closely alongside it. This indicates solid market stability and steady baseline demand. There is a dramatic drop-
 off in both revenue and units sold in 2025.
 
 On the right side of the line chart, it experiences a massive upward revenue trend starting on Thursday and reaching its absolute weekly peak
@@ -67,7 +87,8 @@ Moreover, following a strong Sunday, sales drop to the lowest point of the entir
 
 Page 2: Product Performance & Key Drivers:
 
-<img width="1906" height="1146" alt="image" src="https://github.com/user-attachments/assets/249f8c52-c18e-4850-b699-aed19c4b742e" />
+<img width="1682" height="1126" alt="image" src="https://github.com/user-attachments/assets/cc38ed91-4c88-4b80-bac8-6f66eea4bd6f" />
+
 
 1. Total Units Sold and Total Revenue by Category:
 
@@ -91,8 +112,8 @@ purchase.
 
    Include a illistrative Text Box paired with a Single Value KPI Card (Bottom-Right near right side) with Dynamic Unit Price Increase % Slider (Top).
    
-  **Business Insights:** By adjusting the operational slider to model a **30% unit price increase**, the dashboard dynamically calculates an
-  aggressive **$465,621 revenue optimization runway**.This simulation forecasts a baseline revenue shift pushing totals from **$1,552,071 up to   a projected $2,017,692**. This enables leadership to run risk-free margin stress tests before implementing real-world price increases.
+  **Business Insights:** By adjusting the operational slider to model a **5% unit price increase**, the dashboard dynamically calculates an
+  aggressive **$77,604 revenue optimization runway**.This simulation forecasts a baseline revenue shift pushing totals from **$1,552,071 up to   a projected $1,629,675**. This enables leadership to run risk-free margin stress tests before implementing real-world price increases.
 
 
   
